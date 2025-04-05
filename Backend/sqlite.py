@@ -31,12 +31,12 @@ class SQLliteDB:
 
     def InsertNewUser(self, c):
         sToken = getNewSessionToken()
-        self.Cursor.execute("INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.Email, c.FirstName, c.LastName, c.Password, sToken))
+        self.Cursor.execute("INSERT INTO users (Email, FirstName, LastName, PassHash, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.Email, c.FirstName, c.LastName, c.Password, sToken))
         self.Connection.commit()
         return sToken
     
-    def GetPastRoutes(self, UserId):
-        self.Cursor.execute("SELECT * FROM Routes WHERE UserId = ?", (UserId,))
+    def GetPastRoutes(self, Email):
+        self.Cursor.execute("SELECT * FROM Routes WHERE Email = ?", (Email ,))
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
     
