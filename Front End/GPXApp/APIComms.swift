@@ -8,7 +8,7 @@
 // OSM Async Functions
 
 import Foundation
-import MapKit
+import CoreLocation
 
 
 struct OSMResponse : Codable {
@@ -84,6 +84,7 @@ func getAsyncOSMData(lon: Double, lat: Double, radius: Double) async throws -> O
                 }
             }
         }
+        print(osmResponse)
         return osmResponse
     }
     catch {
@@ -93,3 +94,95 @@ func getAsyncOSMData(lon: Double, lat: Double, radius: Double) async throws -> O
     return OSMResponse()
 }
 
+
+// --
+struct ORSDirectionsResponse: Codable {
+    let type: String
+    let features: [ORSFeature]
+    // Add bbox, metadata if needed from the actual API response
+}
+
+struct ORSFeature: Codable {
+    let type: String
+    let properties: ORSProperties
+    let geometry: ORSGeometry
+    // Add bbox if needed
+}
+
+struct ORSProperties: Codable {
+    // Add more properties as needed from the response (e.g., segments, summary)
+    let summary: ORSSummary?
+}
+
+struct ORSGeometry: Codable {
+    let type: String // e.g., "LineString"
+    // Coordinates format from ORS with elevation: [longitude, latitude, elevation]
+    let coordinates: [[Double]]
+}
+
+struct ORSSummary: Codable {
+    let distance: Double? // in meters
+    let duration: Double? // in seconds
+}
+
+// Helper extension to convert ORS coordinates easily
+extension ORSGeometry {
+    // Returns coordinates suitable for MKPolyline (ignores elevation)
+    var mapKitCoordinates: [CLLocationCoordinate2D] {
+        // ORS coordinates are [longitude, latitude, elevation]
+        coordinates.map { CLLocationCoordinate2D(latitude: $0[1], longitude: $0[0]) }
+    }
+
+    // Returns coordinates including elevation if you need it for other calculations
+    var coordinatesWithElevation: [(coordinate: CLLocationCoordinate2D, elevation: Double)] {
+         // ORS coordinates are [longitude, latitude, elevation]
+         coordinates.map { (CLLocationCoordinate2D(latitude: $0[1], longitude: $0[0]), $0[2]) }
+     }
+}
+
+
+
+// New API Call for OpenRouteService
+func getAsyncORSData(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLLocationCoordinate2D, typeOfPath: String="foot-path") async throws -> ORSDirectionsResponse {
+    let apiKey = ""
+    
+    guard let url = URL(string: "https://api.openrouteservice.org/v2/directions/\(typeOfPath)/geojson") else {
+            print("Invalid ORS URL")
+            throw URLError(.badURL)
+        }
+    
+    var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8", forHTTPHeaderField: "Accept")
+        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+
+        // Note: ORS expects coordinates as [longitude, latitude]
+        let requestBody: [String: Any] = [
+            "coordinates": [
+                [startCoordinate.longitude, startCoordinate.latitude],
+                [endCoordinate.longitude, endCoordinate.latitude]
+            ],
+            "elevation": true // Request elevation data
+            // Add alternative_routes dictionary here if needed
+            // "alternative_routes": ["target_count": 3, "share_factor": 0.6, "weight_factor": 1.4]
+        ]
+    
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+        print("No HTTP response")
+        throw URLError(.badServerResponse)
+    }
+    
+    let decoder = JSONDecoder()
+    
+    do {
+        let osrResponse = try decoder.decode(ORSDirectionsResponse.self, from: data)
+        return osrResponse
+    } catch {
+        print("Error decoding ORS response: \(error)")
+                print("Raw response data: \(String(data: data, encoding: .utf8) ?? "Undecodable data")")
+                throw error
+    }
+}
