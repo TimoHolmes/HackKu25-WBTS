@@ -35,6 +35,11 @@ class SQLliteDB:
         self.Cursor.execute("SELECT * FROM Routes WHERE UserId = ?", (UserId,))
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
+    
+    def GetTopRatedRoutes(self): 
+        self.Cursor.execute("SELECT * FROM Routes WHERE likes = Max(likes) ")
+        rows = self.Cursor.fetchall()
+        return [dict(row) for row in rows]
 
 
 command1 = """ Create table if not exists users (
