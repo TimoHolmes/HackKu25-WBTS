@@ -69,6 +69,10 @@ async def get_top_rated_routes(token:str = Query(...), Longitude: float = Query(
         return {"status": 400, "info": "No routes found"}
     return {"status": 200, "routes": results}
 
+@app.get("/getRecentRoutes")
+async def getRecentRoutes(token: str = Query(...), Longitude: float = Query(...), Latitude: float = Query(...), Distance: float = Query(...)):
+    results = db.getRecentRoutes(Longitude, Latitude, Distance)
+
 @app.post("/postRoute")
 async def post_route(r: routeInformation):
     if(not db.checkToken(r.token)):
