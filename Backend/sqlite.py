@@ -26,8 +26,3 @@ command2 = """ Create table if not exists past_paths
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     foreign key (UserId) references users(UserId)
 ) """
-
-cursor.execute(command1)
-cursor.execute(command2)
-connection.commit()
-connection.close()
