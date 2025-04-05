@@ -49,6 +49,10 @@ class SQLliteDB:
         self.Cursor.execute("INSERT INTO ROUTES (Email, RouteName, Distance, Incline, Longitude, Latitude, Likes, FilePath) " \
         "VALUES (?,?,?,?,?,?,?)", (r.Email, r.RouteName, r.Distance, r.Incline, r.Longitude, r.Latitude, 0,r.FilePath))
 
+    def checkToken(self, token):
+        self.Cursor.execute("Select * from users where SessionToken = ?", (token, ))
+        return (self.Cursor.fetchall() != [])
+
 
 
 command1 = """ Create table if not exists users (
