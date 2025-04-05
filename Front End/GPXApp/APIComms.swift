@@ -186,3 +186,31 @@ func getAsyncORSData(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLL
                 throw error
     }
 }
+
+
+func userSignUp() async throws -> Void {
+    guard let url = URL(string: "http://127.0.0.1:8000/newUser") else {
+            print("Invalid ORS URL")
+            throw URLError(.badURL)
+        }
+    
+    var request = URLRequest(url:url)
+    request.httpMethod = "POST"
+    
+    let requestBody: String = """
+            "FirstName": "test",
+            "LastName": "test",
+            "Email": "test@test.com",
+            "Password": "123"
+        """
+    
+    request.httpBody = requestBody.data(using: .utf8)
+    
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    // 5. Validate the Response
+    guard let httpResponse = response as? HTTPURLResponse,
+          (200...299).contains(httpResponse.statusCode) else {
+        throw URLError(.badServerResponse)
+    }
+}
