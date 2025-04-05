@@ -14,6 +14,7 @@ struct LoginPage: View {
     @State private var wrongUsername = 0
     @State private var wrongPassword = 0
     @State private var isLoggedIn = false
+    @State private var token = ""
     
     var body: some View {
         NavigationView {
@@ -30,24 +31,23 @@ struct LoginPage: View {
                     Text("Sign in to GPX Generator")
                         .font(.title)
                         .padding()
-                    TextField("email", text: .constant("    apple@example.com"))
+                    TextField("email", text: $email)
                         .padding(.top)
                         .frame(width: 300, height: 50)
                         .background(Color.white.opacity(0.1))
                         .border(.red, width: CGFloat(wrongUsername))
                         .cornerRadius(5)
-                    SecureField("password", text: .constant("123456"))
+                    SecureField("password", text: $password)
                         .frame(width: 300, height: 50)
                         .background(Color.black.opacity(0.2))
                         .border(.red, width: CGFloat(wrongPassword))
                         .cornerRadius(5)
                     Button("SIGN IN") {
-                        print("IN")
+                        Task {
+                            token = try await userLogin(email: email, password: password)
+                            print(token)
+                        }
                     }
-                    Button("SIGN UP") {
-                        print("HELO")
-                    }
-
                 }
             }
         }

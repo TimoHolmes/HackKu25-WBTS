@@ -188,7 +188,7 @@ func getAsyncORSData(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLL
 }
 
 
-func userSignUp() async throws -> Void {
+func userSignUp(email: String, password: String, firstName: String, lastName: String) async throws -> Void {
     guard let url = URL(string: "http://127.0.0.1:8000/newUser") else {
             print("Invalid ORS URL")
             throw URLError(.badURL)
@@ -198,10 +198,10 @@ func userSignUp() async throws -> Void {
     request.httpMethod = "POST"
     
     let requestBody: String = """
-            "FirstName": "test",
-            "LastName": "test",
-            "Email": "test@test.com",
-            "Password": "123"
+            "FirstName": "\(email)",
+            "LastName": "\(password)",
+            "Email": "\(firstName)",
+            "Password": "\(lastName)"
         """
     
     request.httpBody = requestBody.data(using: .utf8)
@@ -213,4 +213,52 @@ func userSignUp() async throws -> Void {
           (200...299).contains(httpResponse.statusCode) else {
         throw URLError(.badServerResponse)
     }
+}
+
+
+func userLogin(email: String, password: String) async throws -> String {
+    guard let url = URL(string: "http://127.0.0.1:8000/login") else {
+            print("Invalid ORS URL")
+            throw URLError(.badURL)
+        }
+    
+    var request = URLRequest(url:url)
+    request.httpMethod = "POST"
+    
+    let requestBody: String = """
+        {
+            "Email": "\(email)",
+            "Password": "\(password)"
+        }
+        """
+    
+    request.httpBody = requestBody.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    guard let httpResponse = response as? HTTPURLResponse,
+          (200...299).contains(httpResponse.statusCode) else {
+        throw URLError(.badServerResponse)
+    }
+    
+    let decoder = JSONDecoder()
+    do {
+        let loginResponse = try decoder.decode(userLoginResponse.self, from: data)
+        print(loginResponse.Token)
+        return loginResponse.Token
+    } catch {
+        print("Raw JSON data: \(String(data: data, encoding: .utf8) ?? "Unable to convert data to string")")
+
+        print("Error decoding JSON: \(error)") // Keep your original error print
+            // ... other error handling ...
+    }
+    return ""
+}
+
+
+struct userLoginResponse: Decodable {
+    var status: Int32
+    var Token: String
+    var info: String
 }
