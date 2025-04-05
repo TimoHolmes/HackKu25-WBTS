@@ -39,7 +39,7 @@ async def login(c : AppleCredential):
         sToken = db.SetNewSessionToken(c.User)
         return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
 
-@app.get("/getPasRoutes")
+@app.get("/getPastRoutes")
 async def get_past_routes(UserId: str = Query(...)):
     results = db.GetPastRoutes(UserId)
     if not results:
