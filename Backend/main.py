@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from models import newUserCredentials, logInCredentials
 from sqlite import SQLliteDB
-from utils import getNewSessionToken
+from utils import getNewSessionToken, save_route_file
 import hashlib
 
 app = FastAPI()
@@ -50,18 +50,8 @@ async def newUser(c: newUserCredentials):
     return {"status" : 200, "info" : "user created"}
 
 
-
-
-
-
-
-
-
 @app.get("/getPastRoutes")
 async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):
-    valid = IsValidAuthToken(token)
-    if(not valid):
-        return {"status" : 400, "info" : "invalid auth token"}
     results = db.GetPastRoutes(UserId)
     if not results:
         return {"status": 400, "info": "No routes found"}
@@ -70,9 +60,6 @@ async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):
 
 @app.get("/getTopRatedRoutes")
 async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...)):
-    valid = IsValidAuthToken(token)
-    if(not valid):
-        return {"status" : 400, "info" : "invalid auth token"}
     results = db.GetTopRatedRoutes()
     if not results:
         return {"status": 400, "info": "No routes found"}
@@ -85,9 +72,6 @@ async def post_routw(UserId: str = Query(...),
                      PathIncline: str = Query(...), 
                      PathLength: str = Query(...), 
                      token: str = Query(...)):
-    valid = IsValidAuthToken(token)
-    if(not valid):
-        return {"status" : 400, "info" : "invalid auth token"}
     Path = save_route_file(UserId, Path)
     db.PostRoute(UserId, PathName, Path, PathIncline, PathLength)
     return {"status": 100, "info": "Route uploaded successfully", "filePath": Path}
