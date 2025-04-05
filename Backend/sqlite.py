@@ -6,8 +6,11 @@ from datetime import datetime
 from pathlib import Path
 
 #Store file path for UserId, firstname, lastname, session token, past-paths
-connection = sqlite3.connect('hackku.db')
-cursor = connection.cursor()
+def getSQLiteCurser():
+    connection = sqlite3.connect('hackku.db')
+    return connection.cursor()
+
+
 
 command1 = """ Create table if not exists users (
     UserId string primary key Not Null,
@@ -16,6 +19,3 @@ command1 = """ Create table if not exists users (
     Email string Not Null,
     SessionToken string
 ) """
-
-cursor.execute(command1)
-connection.commit()
