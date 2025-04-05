@@ -20,7 +20,8 @@ def save_route_file(user_email: str, file: UploadFile):
 
     # Save the file
     with open(file_path, "wb") as f:
-        f.write(file.file.read())
+        for chunk in file.file:
+            f.write(chunk)
 
     return file_path
 

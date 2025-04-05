@@ -12,7 +12,9 @@ from utils import getNewSessionToken, haversine_miles
 class SQLliteDB:
     def __init__(self):
         self.Connection = sqlite3.connect('hackku.db')
+        self.Connection.row_factory = sqlite3.Row
         self.Cursor = self.Connection.cursor()
+
 
     def checkUserExists(self, Email):
         self.Cursor.execute("SELECT * FROM users WHERE Email = ?", (Email,))
@@ -57,6 +59,7 @@ class SQLliteDB:
     def PostRoute(self, r):
         self.Cursor.execute("INSERT INTO routes (Email, RouteName, Distance, Incline, Longitude, Latitude, Likes, FilePath) " \
         "VALUES (?,?,?,?,?,?,?)", (r.Email, r.RouteName, r.Distance, r.Incline, r.Longitude, r.Latitude, 0,r.FilePath))
+        self.Connection.commit()
 
     def checkToken(self,  token):
         self.Cursor.execute("Select * from users where SessionToken = ?", (token, ))

@@ -80,7 +80,7 @@ async def post_route(r: routeInformation):
     if(not db.checkToken(r.token)):
         return {"status" : 400, "info" : "invalid token"}
 
-    Path = save_route_file(r.Email, r.FilePath)
+    Path = save_route_file(r.Email, r.gpxFile)
     db.PostRoute(r)
     return {"status": 200, "info": "Route uploaded successfully", "filePath": Path}
 
