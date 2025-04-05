@@ -9,7 +9,8 @@ from datetime import timedelta
 #Store file path for UserId, firstname, lastname, session token, past-paths
 def getSQLiteCurser():
     connection = sqlite3.connect('hackku.db')
-    return connection.cursor()
+    return connection.cursor(), connection
+
 
 command1 = """ Create table if not exists users (
     UserId string primary key Not Null,

@@ -4,7 +4,7 @@ from sqlite import getSQLiteCurser
 from utils import getNewSessionToken
 
 app = FastAPI()
-dbCurser = getSQLiteCurser()
+dbCurser, connection = getSQLiteCurser()
 
 @app.get("/test")
 def test():
@@ -25,12 +25,12 @@ async def login(c : AppleCredential):
         if(results):
             sToken = getNewSessionToken()
             dbCurser.execute(f"UPDATE users SET SessionToken = '{sToken}' WHERE UserId = '{c.User}'")
+            connection.commit()
             return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
 
         sToken = getNewSessionToken()
-        sql = "INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)"
-        values = (c.User, c.FirstName, c.LastName, c.Email, sToken)
-        dbCurser.execute(sql, values)
+        dbCurser.execute("INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.User, c.FirstName, c.LastName, c.Email, sToken))
+        connection.commit()
         print("account created succesfully")
         return {"status" : 100, "SessionToken" : {sToken}, "info" : "account created successfully"}
     
@@ -42,6 +42,7 @@ async def login(c : AppleCredential):
     else:
         sToken = getNewSessionToken()
         dbCurser.execute(f"UPDATE users SET SessionToken = '{sToken}' WHERE UserId = '{c.User}'")
+        connection.commit()
         return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
 
 
