@@ -29,8 +29,8 @@ struct ContentView: View {
                         selectedTab = "Progress"
                     })
                     
-                    FooterButton(iconName: "figure.walk", label: "Activities", action: {
-                        print("Activities button tapped")
+                    FooterButton(iconName: "figure.walk", label: "Community", action: {
+                        print("Community button tapped")
                     })
                     
                     Spacer()

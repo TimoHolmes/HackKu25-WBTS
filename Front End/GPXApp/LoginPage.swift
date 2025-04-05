@@ -39,7 +39,7 @@ struct LoginPage: View {
                     SecureField("password", text: .constant("123456"))
                         .frame(width: 300, height: 50)
                         .background(Color.black.opacity(0.2))
-                        .border(.)
+                        //.border(.)
                         .cornerRadius(5)
                 }
             }
