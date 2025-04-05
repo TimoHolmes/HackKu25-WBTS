@@ -14,20 +14,24 @@ class SQLliteDB:
         self.Connection = sqlite3.connect('hackku.db')
         self.Cursor = self.Connection.cursor()
 
-    def checkUserExists(self, UserId):
-        self.Cursor.execute("SELECT * FROM users WHERE UserId = ?", (UserId,))
+    def checkUserExists(self, Email):
+        self.Cursor.execute("SELECT * FROM users WHERE Email = ?", (Email,))
         results = self.Cursor.fetchall()
         return (results != [])
     
-    def SetNewSessionToken(self, UserId):
+    def getPassHashFromEmail(self, Email):
+        self.Cursor.execute("SELECT PassHash FROM users WHERE Email = ?", (Email, ))
+        return self.Cursor.fetchall()[0][0]
+    
+    def SetNewSessionToken(self, Email):
         sToken = getNewSessionToken()
-        self.Cursor.execute(f"UPDATE users SET SessionToken = '{sToken}' WHERE UserId = '{UserId}'") # rewrite to match other executes
+        self.Cursor.execute(f"UPDATE users SET SessionToken = '{sToken}' WHERE Email = '{Email}'") # rewrite to match other executes
         self.Connection.commit()
         return sToken
 
     def InsertNewUser(self, c):
         sToken = getNewSessionToken()
-        self.Cursor.execute("INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.User, c.FirstName, c.LastName, c.Email, sToken))
+        self.Cursor.execute("INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.Email, c.FirstName, c.LastName, c.Password, sToken))
         self.Connection.commit()
         return sToken
     
