@@ -63,10 +63,10 @@ async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...))
     results = db.GetTopRatedRoutes()
     if not results:
         return {"status": 400, "info": "No routes found"}
-    return {"status": 100, "routes": results}
+    return {"status": 200, "routes": results}
 
 @app.post("/postRoute")
 async def post_route(r: routeInformation):
     Path = save_route_file(r.Email, r.FilePath)
     db.PostRoute(r)
-    return {"status": 100, "info": "Route uploaded successfully", "filePath": Path}
+    return {"status": 200, "info": "Route uploaded successfully", "filePath": Path}
