@@ -40,9 +40,14 @@ async def login(c : AppleCredential):
         return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
 
 @app.get("/getPastRoutes")
-async def get_past_routes(UserId: str = Query(...)):
+async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):
+    valid = IsValidAuthToken(token)
+    if(not valid):
+        return {"status" : 400, "info" : "invalid auth token"}
     results = db.GetPastRoutes(UserId)
     if not results:
         return {"status": 400, "info": "No routes found"}
     
     return {"status": 100, "routes": results}
+
+
