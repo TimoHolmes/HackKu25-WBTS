@@ -52,8 +52,8 @@ async def newUser(c: newUserCredentials):
 
 
 @app.get("/getPastRoutes")
-async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):
-    results = db.GetPastRoutes(UserId)
+async def get_past_routes(Email: str = Query(...), token: str = Query(...)):
+    results = db.GetPastRoutes(Email)
     if not results:
         return {"status": 400, "info": "No routes found"}
     return {"status": 200, "routes": results}

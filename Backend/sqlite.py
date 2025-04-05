@@ -35,8 +35,8 @@ class SQLliteDB:
         self.Connection.commit()
         return sToken
     
-    def GetPastRoutes(self, UserId):
-        self.Cursor.execute("SELECT * FROM Routes WHERE UserId = ?", (UserId,))
+    def GetPastRoutes(self, Email):
+        self.Cursor.execute("SELECT * FROM Routes WHERE Email = ?", (Email ,))
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
     
