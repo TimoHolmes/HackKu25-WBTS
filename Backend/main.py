@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query
 from models import AppleCredential
 from sqlite import SQLliteDB
 from utils import getNewSessionToken, IsValidAuthToken
+from post_route import save_route_file
 
 app = FastAPI()
 db = SQLliteDB()
@@ -60,4 +61,16 @@ async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...))
         return {"status": 400, "info": "No routes found"}
     return {"status": 100, "routes": results}
 
-
+@app.post("/postRoute")
+async def post_routw(UserId: str = Query(...), 
+                     Path: str = Query(...), 
+                     PathName: str = Query(...), 
+                     PathIncline: str = Query(...), 
+                     PathLength: str = Query(...), 
+                     token: str = Query(...)):
+    valid = IsValidAuthToken(token)
+    if(not valid):
+        return {"status" : 400, "info" : "invalid auth token"}
+    Path = save_route_file(UserId, Path)
+    db.PostRoute(UserId, PathName, Path, PathIncline, PathLength)
+    return {"status": 100, "info": "Route uploaded successfully", "filePath": Path}

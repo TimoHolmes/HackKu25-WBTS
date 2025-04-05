@@ -40,6 +40,11 @@ class SQLliteDB:
         self.Cursor.execute("SELECT * FROM Routes WHERE likes = Max(likes) ")
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
+    
+    def PostRoute(self, UserId, FilePath, PathName, PathIncline, PathLength):
+        self.Cursor.execute("INSERT INTO ROUTES (UserId, FilePath, PathName, PathIncline, PathLength) " \
+        "VALUES (?,?,?,?,?,?)", (UserId, Path, PathName, PathIncline, PathLength))
+
 
 
 command1 = """ Create table if not exists users (
