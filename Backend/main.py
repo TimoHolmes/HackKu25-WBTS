@@ -50,4 +50,14 @@ async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):
     
     return {"status": 100, "routes": results}
 
+@app.get("/getTopRatedRoutes")
+async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...)):
+    valid = IsValidAuthToken(token)
+    if(not valid):
+        return {"status" : 400, "info" : "invalid auth token"}
+    results = db.GetTopRatedRoutes()
+    if not results:
+        return {"status": 400, "info": "No routes found"}
+    return {"status": 100, "routes": results}
+
 
