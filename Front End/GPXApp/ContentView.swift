@@ -54,11 +54,11 @@ struct ContentView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            NavigationButton {
-                                print("Create Route tapped")
-                            }
-                            .padding(.trailing, 10) // Space from right edge
-                            .padding(.bottom, 85) // Move it up a little bit
+//                            NavigationButton {
+//                                print("Create Route tapped")
+//                            }
+//                            .padding(.trailing, 10) // Space from right edge
+//                            .padding(.bottom, 85) // Move it up a little bit
                         }
                     }
                 ) : AnyView(EmptyView()), alignment: .bottom
