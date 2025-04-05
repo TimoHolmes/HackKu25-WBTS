@@ -41,10 +41,3 @@ command1 = """ Create table if not exists users (
     SessionToken string,
 ) """
 
-command2 = """ Create table if not exists past_paths
-(
-    UserId string,
-    Path TEXT NOT NULL,
-    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    foreign key (UserId) references users(UserId)
-) """
