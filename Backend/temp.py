@@ -16,18 +16,21 @@ command1 = """ Create table if not exists users (
     FirstName string, 
     LastName string,
     Email string Not Null,
-    SessionToken string,
+    SessionToken string
 ) """
 
 command2 = """ Create table if not exists past_paths
 (
     UserId string,
     Path TEXT NOT NULL,
+    PathName string NOT NULL,
+    PathIncline string NOT NULL,
+    PathLength string NOT NULL,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     foreign key (UserId) references users(UserId)
 ) """
 
+cursor = getSQLiteCurser()
+
 cursor.execute(command1)
 cursor.execute(command2)
-connection.commit()
-connection.close()
