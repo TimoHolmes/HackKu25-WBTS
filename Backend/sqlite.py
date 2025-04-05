@@ -31,7 +31,7 @@ class SQLliteDB:
 
     def InsertNewUser(self, c):
         sToken = getNewSessionToken()
-        self.Cursor.execute("INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.Email, c.FirstName, c.LastName, c.Password, sToken))
+        self.Cursor.execute("INSERT INTO users (Email, FirstName, LastName, PassHash, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.Email, c.FirstName, c.LastName, c.Password, sToken))
         self.Connection.commit()
         return sToken
     

@@ -43,6 +43,7 @@ async def newUser(c: newUserCredentials):
         return {"status" : 400, "info" : "empty field"}
 
     hasher = hashlib.sha256()
+    c.Password = c.Password.encode("utf-8")
     hasher.update(c.Password)
     c.Password = hasher.hexdigest()
 
