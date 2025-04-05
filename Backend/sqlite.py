@@ -5,7 +5,7 @@ from contextlib import closing
 from datetime import datetime
 from pathlib import Path
 from datetime import timedelta
-from utils import getNewSessionToken
+from utils import getNewSessionToken, haversine_miles
 
 #Store file path for UserId, firstname, lastname, session token, past-paths
 
@@ -40,15 +40,19 @@ class SQLliteDB:
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
     
-    def GetTopRatedRoutes(self, long, lat): 
+    def GetTopRatedRoutes(self, long, lat, distance): 
         self.Cursor.execute("SELECT * FROM Routes order by likes")
         rows = self.Cursor.fetchall()
 
+        returnList = []
+
         for tuple in rows:
-            
+            tupleDist = haversine_miles(lat, long, tuple(4), tuple(5))
+            if max(distance - 1, 0) < tupleDist and tupleDist < distance + 1:
+                returnList.append(tuple)
             
 
-        return [dict(row) for row in rows]
+        return returnList
 
     def PostRoute(self, r):
         self.Cursor.execute("INSERT INTO ROUTES (Email, RouteName, Distance, Incline, Longitude, Latitude, Likes, FilePath) " \
