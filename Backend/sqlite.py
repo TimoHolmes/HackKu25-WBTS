@@ -72,9 +72,11 @@ class SQLliteDB:
             tupleDist = haversine_miles(lat, long, tuple(4), tuple(5))
             if max(distance - 1, 0) < tupleDist and tupleDist < distance + 1:
                 returnList.append(tuple)
-
-
         return returnList
+    
+    def getRouteByEmailAndName(self, Email, route_name):
+        self.Cursor.execute("SELECT * FROM routes WHERE Email = ? AND RouteName = ?", (Email, route_name))
+        return self.Cursor.fetchone()
 
 command1 = """ Create table if not exists users (
     UserId string primary key Not Null,
