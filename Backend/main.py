@@ -27,7 +27,7 @@ async def login(c : AppleCredential):
     if not results:
         return {"status" : 400, "info" : "Invalid login"}
     else:
-        sToken = getNewSessionToken():
+        sToken = getNewSessionToken()
         dbCurser.execute(f"UPDATE users SET SessionToken = {sToken} WHERE UserId = {c.User}")
         return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
 
