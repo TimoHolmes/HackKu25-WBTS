@@ -34,13 +34,20 @@ struct LoginPage: View {
                         .padding(.top)
                         .frame(width: 300, height: 50)
                         .background(Color.white.opacity(0.1))
-                        .border(Color.black)
+                        .border(.red, width: CGFloat(wrongUsername))
                         .cornerRadius(5)
                     SecureField("password", text: .constant("123456"))
                         .frame(width: 300, height: 50)
                         .background(Color.black.opacity(0.2))
-                        .border(.)
+                        .border(.red, width: CGFloat(wrongPassword))
                         .cornerRadius(5)
+                    Button("SIGN IN") {
+                        print("IN")
+                    }
+                    Button("SIGN UP") {
+                        print("HELO")
+                    }
+
                 }
             }
         }
