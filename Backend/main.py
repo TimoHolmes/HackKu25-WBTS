@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query
-from models import AppleCredential
+from models import newUserCredentials
 from sqlite import SQLliteDB
 from utils import getNewSessionToken, IsValidAuthToken
 
@@ -17,27 +17,8 @@ def test():
     @return status code 100 on success 400 on failure
 '''
 @app.post("/login")
-async def login(c : AppleCredential):
-    valid = IsValidAuthToken(c.IdToken)
-    if(not valid):
-        return {"status" : 400, "info" : "invalid jwt token"}
-    
-    if(c.Email != None):
-        if(db.checkUserExists(c.User)):
-            sToken = db.SetNewSessionToken(c.User)
-            return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
-        sToken = db.InsertNewUser(c)
-        print("account created succesfully")
-        return {"status" : 100, "SessionToken" : {sToken}, "info" : "account created successfully"}
-    
-    exists = db.checkUserExists(c.User)
-
-    if not exists:
-        print("invalid login")
-        return {"status" : 400, "info" : "Invalid login"}
-    else:
-        sToken = db.SetNewSessionToken(c.User)
-        return {"status" : 100, "SessionToken": sToken, "info" : "login sucess"}
+async def login(c : newUserCredentials):
+    return {"status" : 100}
 
 @app.get("/getPastRoutes")
 async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):

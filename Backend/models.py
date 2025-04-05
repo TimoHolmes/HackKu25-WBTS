@@ -2,11 +2,9 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class AppleCredential(BaseModel):
-    User: str
-    FirstName: Optional[str] = None
-    LastName: Optional[str] = None
-    Email: Optional[str] = None
-
-    IdToken: str 
+class newUserCredentials(BaseModel):
+    FirstName: str
+    LastName: str
+    Email: str 
+    Password: str
 
