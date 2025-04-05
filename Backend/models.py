@@ -8,3 +8,8 @@ class newUserCredentials(BaseModel):
     Email: str 
     Password: str
 
+
+class logInCredentials(BaseModel):
+    Email: str
+    Password: str
+
