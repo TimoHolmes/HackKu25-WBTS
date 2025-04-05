@@ -55,7 +55,6 @@ async def get_past_routes(UserId: str = Query(...), token: str = Query(...)):
     results = db.GetPastRoutes(UserId)
     if not results:
         return {"status": 400, "info": "No routes found"}
-    
     return {"status": 200, "routes": results}
 
 @app.get("/getTopRatedRoutes")
