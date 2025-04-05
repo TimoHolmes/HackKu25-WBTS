@@ -7,8 +7,11 @@ from pathlib import Path
 from datetime import timedelta
 
 #Store file path for UserId, firstname, lastname, session token, past-paths
-connection = sqlite3.connect('hackku.db')
-cursor = connection.cursor()
+def getSQLiteCurser():
+    connection = sqlite3.connect('hackku.db')
+    return connection.cursor()
+
+
 
 command1 = """ Create table if not exists users (
     UserId string primary key Not Null,
@@ -25,7 +28,10 @@ command2 =""" Create table if not exists past_paths
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     foreign key (UserId) references users(UserId)
 ) """
+<<<<<<< HEAD
 
 cursor.execute(command1)
 cursor.execute(command2)
 connection.commit()
+=======
+>>>>>>> e79f7fef4c15276a286dccc2fed93eaf3e6572bd
