@@ -1,9 +1,8 @@
 from fastapi import FastAPI, Query
 from models import newUserCredentials, logInCredentials
 from sqlite import SQLliteDB
-from utils import getNewSessionToken, IsValidAuthToken
+from utils import getNewSessionToken
 import hashlib
-import message
 
 app = FastAPI()
 db = SQLliteDB()
