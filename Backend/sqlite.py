@@ -45,9 +45,9 @@ class SQLliteDB:
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
     
-    def PostRoute(self, UserId, FilePath, PathName, PathIncline, PathLength):
-        self.Cursor.execute("INSERT INTO ROUTES (UserId, FilePath, PathName, PathIncline, PathLength) " \
-        "VALUES (?,?,?,?,?,?)", (UserId, Path, PathName, PathIncline, PathLength))
+    def PostRoute(self, r):
+        self.Cursor.execute("INSERT INTO ROUTES (Email, RouteName, Distance, Incline, Longitude, Latitude, Likes, FilePath) " \
+        "VALUES (?,?,?,?,?,?,?)", (r.Email, r.RouteName, r.Distance, r.Incline, r.Longitude, r.Latitude, 0,r.FilePath))
 
 
 

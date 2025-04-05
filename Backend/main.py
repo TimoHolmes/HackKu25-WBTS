@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query
-from models import newUserCredentials, logInCredentials
+from models import newUserCredentials, logInCredentials, routeInformation
 from sqlite import SQLliteDB
 from utils import getNewSessionToken, save_route_file
 import hashlib
@@ -66,12 +66,7 @@ async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...))
     return {"status": 100, "routes": results}
 
 @app.post("/postRoute")
-async def post_routw(UserId: str = Query(...), 
-                     Path: str = Query(...), 
-                     PathName: str = Query(...), 
-                     PathIncline: str = Query(...), 
-                     PathLength: str = Query(...), 
-                     token: str = Query(...)):
-    Path = save_route_file(UserId, Path)
-    db.PostRoute(UserId, PathName, Path, PathIncline, PathLength)
+async def post_route(r: routeInformation):
+    Path = save_route_file(r.Email, r.FilePath)
+    db.PostRoute(r)
     return {"status": 100, "info": "Route uploaded successfully", "filePath": Path}
