@@ -59,8 +59,8 @@ async def get_past_routes(Email: str = Query(...), token: str = Query(...)):
     return {"status": 200, "routes": results}
 
 @app.get("/getTopRatedRoutes")
-async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...)):
-    results = db.GetTopRatedRoutes()
+async def get_top_rated_routes(token:str = Query(...), Longitude: float = Query(...), Latitude: float = Query(...), Distance: float = Query(...)):
+    results = db.GetTopRatedRoutes(token, Longitude, Latitude, Distance)
     if not results:
         return {"status": 400, "info": "No routes found"}
     return {"status": 200, "routes": results}
