@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from models import AppleCredential
 from sqlite import SQLliteDB
-from utils import getNewSessionToken
+from utils import getNewSessionToken, IsValidAuthToken
 
 app = FastAPI()
 db = SQLliteDB()
@@ -18,6 +18,11 @@ def test():
 '''
 @app.post("/login")
 async def login(c : AppleCredential):
+    valid = IsValidAuthToken(c.IdToken)
+    if(not valid):
+        return {"status" : 400, "info" : "invalid jwt token"}
+    
+    
     if(c.Email != None):
 
         if(db.checkUserExists(c.User)):

@@ -8,3 +8,5 @@ class AppleCredential(BaseModel):
     LastName: Optional[str] = None
     Email: Optional[str] = None
 
+    IdToken: str 
+
