@@ -30,7 +30,11 @@ class SQLliteDB:
         self.Cursor.execute("INSERT INTO users (UserId, FirstName, LastName, Email, SessionToken) VALUES (?, ?, ?, ?, ?)", (c.User, c.FirstName, c.LastName, c.Email, sToken))
         self.Connection.commit()
         return sToken
-
+    
+    def GetPastRoutes(self, UserId):
+        self.Cursor.execute("SELECT * FROM Routes WHERE UserId = ?", (UserId,))
+        rows = self.Cursor.fetchall()
+        return [dict(row) for row in rows]
 
 
 command1 = """ Create table if not exists users (
