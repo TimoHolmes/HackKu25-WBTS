@@ -48,25 +48,36 @@ async def newUser(c: newUserCredentials):
     c.Password = hasher.hexdigest()
 
     stoken = db.InsertNewUser(c)
-    return {"status" : 200, "info" : "user created"}
+    return {"status" : 200, "Token": stoken, "info" : "user created"}
 
 
 @app.get("/getPastRoutes")
 async def get_past_routes(Email: str = Query(...), token: str = Query(...)):
+    if(not db.checkToken(token)):
+        return {"status" : 400, "info" : "invalid token"}
+    
+
     results = db.GetPastRoutes(Email)
     if not results:
         return {"status": 400, "info": "No routes found"}
     return {"status": 200, "routes": results}
 
 @app.get("/getTopRatedRoutes")
-async def get_top_rated_routes(Likes: str = Query(...), token: str = Query(...)):
-    results = db.GetTopRatedRoutes()
+async def get_top_rated_routes(Likes: str = Query(...),long: str = Query(...), lat: str = Query(...), token: str = Query(...)):
+    if(not db.checkToken(token)):
+        return {"status" : 400, "info" : "invalid token"}
+    
+
+    results = db.GetTopRatedRoutes(long, lat)
     if not results:
         return {"status": 400, "info": "No routes found"}
     return {"status": 200, "routes": results}
 
 @app.post("/postRoute")
 async def post_route(r: routeInformation):
+    if(not db.checkToken(r.token)):
+        return {"status" : 400, "info" : "invalid token"}
+
     Path = save_route_file(r.Email, r.FilePath)
     db.PostRoute(r)
     return {"status": 200, "info": "Route uploaded successfully", "filePath": Path}

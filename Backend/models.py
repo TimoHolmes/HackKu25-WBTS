@@ -14,7 +14,6 @@ class logInCredentials(BaseModel):
     Email: str
     Password: str
 
-
 class routeInformation(BaseModel):
     Email: str
     RouteName: str
@@ -24,5 +23,6 @@ class routeInformation(BaseModel):
     Latitude: str
     FilePath: str
     gpxFile: UploadFile
+    token: str
 
 

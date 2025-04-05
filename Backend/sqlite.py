@@ -40,11 +40,16 @@ class SQLliteDB:
         rows = self.Cursor.fetchall()
         return [dict(row) for row in rows]
     
-    def GetTopRatedRoutes(self): 
-        self.Cursor.execute("SELECT * FROM Routes WHERE likes = Max(likes) ")
+    def GetTopRatedRoutes(self, long, lat): 
+        self.Cursor.execute("SELECT * FROM Routes order by likes")
         rows = self.Cursor.fetchall()
+
+        for tuple in rows:
+            
+            
+
         return [dict(row) for row in rows]
-    
+
     def PostRoute(self, r):
         self.Cursor.execute("INSERT INTO ROUTES (Email, RouteName, Distance, Incline, Longitude, Latitude, Likes, FilePath) " \
         "VALUES (?,?,?,?,?,?,?)", (r.Email, r.RouteName, r.Distance, r.Incline, r.Longitude, r.Latitude, 0,r.FilePath))
