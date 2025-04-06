@@ -1,0 +1,12 @@
+venv
+.venv
+env
+.env
+
+# Xcode User Data
+*.xcuserstate
+project.xcworkspace/xcuserdata/
+xcuserdata/
+
+# macOS Files
+.DS_Store
