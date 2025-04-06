@@ -76,16 +76,11 @@ struct MapView: View {
                 }
                     .mapStyle(.hybrid(elevation: .realistic))
                     .ignoresSafeArea()
-                    .onChange(of: currentCoordinates) { oldValue, newValue in
-                        Task { await fetchAndDisplayRoute() }
-                    }
-                    .onChange(of: destinationCoordinates) { oldValue, newValue in
-                         Task { await fetchAndDisplayRoute() }
-                    }
                     .onAppear {
                         observeCoordinateUpdates()
                         observeDeviceLocationDenied()
                         deviceLocationService.requestLocationUpdates()
+                        Task {await fetchAndDisplayRoute()}
 
                         // Set initial map position (e.g., Lawrence, KS, or based on user location if available)
                          let initialCenter = currentCoordinates ?? CLLocationCoordinate2D(latitude: 38.9571529, longitude: -95.253022)
