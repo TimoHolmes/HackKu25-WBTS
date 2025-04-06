@@ -10,6 +10,7 @@ import MapKit
 import UIKit
 import Combine
 
+
 struct ContentView: View {
     @State private var selectedTab: String = "Progress"
     @State var OSM: OSMResponse = OSMResponse()
@@ -86,6 +87,7 @@ struct FooterButton: View {
         }
     }
 }
+
 
 #Preview {
     ContentView()

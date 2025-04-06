@@ -11,12 +11,13 @@ import SwiftUI
 struct GPXAppApp: App {
     var body: some Scene {
         WindowGroup {
-            @State var isLoggedIn: Bool = false
-            if isLoggedIn == true {
-                ContentView()
-            } else {
-                LoginPage()
-            }
+//            @State var isLoggedIn: Bool = false
+//            if isLoggedIn == true {
+//                ContentView()
+//            } else {
+//                LoginPage()
+//            }
+            ContentView()
         }
     }
 }
