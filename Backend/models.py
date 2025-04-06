@@ -14,15 +14,14 @@ class logInCredentials(BaseModel):
     Email: str
     Password: str
 
-
 class routeInformation(BaseModel):
     Email: str
     RouteName: str
-    Distance: str
-    Incline: str
-    Longitude: str
-    Latitude: str
-    FilePath: str
-    gpxFile: UploadFile
+    Distance: int
+    Incline: float
+    Longitude: float
+    Latitude: float
+    gpxFileContent: str
+    Token: str
 
 
