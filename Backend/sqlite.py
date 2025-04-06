@@ -56,9 +56,9 @@ class SQLliteDB:
 
         return returnList
 
-    def PostRoute(self, r):
+    def PostRoute(self, r, FilePath):
         self.Cursor.execute("INSERT INTO routes (Email, RouteName, Distance, Incline, Longitude, Latitude, Likes, FilePath) " \
-        "VALUES (?,?,?,?,?,?,?)", (r.Email, r.RouteName, r.Distance, r.Incline, r.Longitude, r.Latitude, 0,r.FilePath))
+        "VALUES (?,?,?,?,?,?,?)", (r.Email, r.RouteName, r.Distance, r.Incline, r.Longitude, r.Latitude, 0, FilePath))
         self.Connection.commit()
 
     def checkToken(self,  token):
