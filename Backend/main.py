@@ -84,7 +84,7 @@ async def post_route(r: routeInformation):
     db.PostRoute(r, Path)
     return {"status": 200, "info": "Route uploaded successfully", "filePath": Path}
 
-@app.get('/routeByEmailAndName')
+@app.get('/getRoute')
 async def get_route_by_email_and_name(
     token: str = Query(...),
     Email: str = Query(...),
@@ -99,14 +99,12 @@ async def get_route_by_email_and_name(
 
     db_file_path = route["FilePath"] 
 
-    safe_email = Email.replace("@", "_at_").replace(".", "_dot_")
-    file_path = os.path.join(UPLOAD_BASE_DIR, safe_email, db_file_path)
 
-    if not os.path.exists(file_path):
+    if not os.path.exists(db_file_path):
         raise HTTPException(status_code=404, detail="GPX file not found")
 
     return FileResponse(
-        path=file_path,
+        path=db_file_path,
         media_type="application/gpx+xml",
-        filename=os.path.basename(file_path)
+        filename=os.path.basename(db_file_path)
     )
