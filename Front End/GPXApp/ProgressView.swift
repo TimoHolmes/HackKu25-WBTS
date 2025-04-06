@@ -106,7 +106,9 @@ struct ProgressPage: View {
                     ScrollView {
                         VStack(spacing: 16) {
                             ForEach(viewModel.runRoutes) { route in
-                                RouteCard(route: route)
+                                NavigationLink(destination: RouteDetailView(route: route)) {
+                                    RouteCard(route: route)
+                                }
                             }
                         }
                         .padding(.vertical)
