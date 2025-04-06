@@ -77,7 +77,7 @@ async def getRecentRoutes(token: str = Query(...), Longitude: float = Query(...)
 
 @app.post("/postRoute")
 async def post_route(r: routeInformation):
-    if(not db.checkToken(r.token)):
+    if(not db.checkToken(r.Tokenoken)):
         return {"status" : 400, "info" : "invalid token"}
 
     Path = save_route_file(r.Email, r.gpxFileContent, r.RouteName)
