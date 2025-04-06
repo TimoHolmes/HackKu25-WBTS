@@ -10,6 +10,7 @@ import MapKit
 import UIKit
 import Combine
 
+
 struct ContentView: View {
     @State private var selectedTab: String = "Progress"
     @State var OSM: OSMResponse = OSMResponse()
@@ -20,49 +21,52 @@ struct ContentView: View {
                     ProgressPage()
                 } else if selectedTab == "Explore" {
                     MapView()
+                } else if selectedTab == "Community" {
+                    CommunityRoutesView()
                 }
                 
-                Spacer()
+                //Spacer()
                 
                 HStack {
-                    FooterButton(iconName: "chart.bar", label: "Progress", action: {
+                    FooterButton(iconName: "chart.bar.fill", label: "Progress", action: {
                         selectedTab = "Progress"
                     })
                     
-                    FooterButton(iconName: "figure.walk", label: "Activities", action: {
-                        print("Activities button tapped")
+                    FooterButton(iconName: "person.3.fill", label: "Community", action: {
+//                        print("Community button tapped")
+                        selectedTab = "Community"
                     })
                     
-                    Spacer()
+                    //Spacer()
                     
-                    FooterButton(iconName: "magnifyingglass", label: "Explore", action: {
+                    FooterButton(iconName: "mappin.circle.fill", label: "Explore", action: {
                         selectedTab = "Explore"
                     })
                     
-                    FooterButton(iconName: "person.crop.circle", label: "Profile", action: {
+                    FooterButton(iconName: "person.crop.circle.fill", label: "Profile", action: {
                         print("Profile button tapped")
                     })
                 }
-                .padding()
+                .padding(.top)
                 .background(Color.gray)
-                .shadow(radius: 5)
+                //.shadow(radius: 5)
             }
-            .overlay(
-                // Only show the NavigationButton when Explore tab is selected
-                selectedTab == "Explore" ? AnyView(
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
+//            .overlay(
+//                // Only show the NavigationButton when Explore tab is selected
+//                selectedTab == "Explore" ? AnyView(
+//                    VStack {
+//                        Spacer()
+//                        HStack {
+//                            Spacer()
 //                            NavigationButton {
 //                                print("Create Route tapped")
 //                            }
 //                            .padding(.trailing, 10) // Space from right edge
 //                            .padding(.bottom, 85) // Move it up a little bit
-                        }
-                    }
-                ) : AnyView(EmptyView()), alignment: .bottom
-            )
+//                        }
+//                    }
+//                ) : AnyView(EmptyView()), alignment: .bottom
+//            )
         }
     }
 }
@@ -86,6 +90,7 @@ struct FooterButton: View {
         }
     }
 }
+
 
 #Preview {
     ContentView()

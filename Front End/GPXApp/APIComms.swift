@@ -95,6 +95,19 @@ func getAsyncOSMData(lon: Double, lat: Double, radius: Double) async throws -> O
 }
 
 
+
+//ORSDirectionsResponse
+//└── features: [ (Array of...)
+//      ORSFeature
+//      ├── properties: ORSProperties
+//      │   └── summary: ORSSummary?
+//      │       ├── distance: Double?
+//      │       └── duration: Double?
+//      └── geometry: ORSGeometry
+//          ├── type: String
+//          └── coordinates: [[Double]]  // Array of [lon, lat, elev] arrays
+//    ]
+
 // --
 struct ORSDirectionsResponse: Codable {
     let type: String
@@ -134,25 +147,33 @@ extension ORSGeometry {
     }
 
     // Returns coordinates including elevation if you need it for other calculations
-    var coordinatesWithElevation: [(coordinate: CLLocationCoordinate2D, elevation: Double)] {
-         // ORS coordinates are [longitude, latitude, elevation]
-         coordinates.map { (CLLocationCoordinate2D(latitude: $0[1], longitude: $0[0]), $0[2]) }
-     }
+    // In APIComms.swift -> extension ORSGeometry
+    var coordinatesWithElevation: [(coordinate: CLLocationCoordinate2D, elevation: Double?)] { // Return optional elevation
+        coordinates.map { pointArray in
+            // Create coordinate (assuming index 0 and 1 always exist)
+            let coordinate = CLLocationCoordinate2D(latitude: pointArray[1], longitude: pointArray[0])
+            
+            // Safely check if index 2 exists before accessing it
+            let elevation: Double? = pointArray.count > 2 ? pointArray[2] : nil // Use nil if missing
+            
+            return (coordinate: coordinate, elevation: elevation)
+        }
+    }
 }
 
 
 
 // New API Call for OpenRouteService
-func getAsyncORSData(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLLocationCoordinate2D, typeOfPath: String="foot-path") async throws -> ORSDirectionsResponse {
-    let apiKey = ""
+func getAsyncORSData(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLLocationCoordinate2D, typeOfPath: String="foot-walking") async throws -> ORSDirectionsResponse {
+    let apiKey = "5b3ce3597851110001cf62489a9789b8348f4294821d7b4a5305cdb4"
     
-    guard let url = URL(string: "https://api.openrouteservice.org/v2/directions/\(typeOfPath)/geojson") else {
+    guard let url = URL(string: "https://api.openrouteservice.org/v2/directions/\(typeOfPath)?api_key=5b3ce3597851110001cf62489a9789b8348f4294821d7b4a5305cdb4&start=\(startCoordinate.longitude),\(startCoordinate.latitude)&end=\(startCoordinate.longitude), \(endCoordinate.latitude)") else {
             print("Invalid ORS URL")
             throw URLError(.badURL)
         }
     
     var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = "GET"
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8", forHTTPHeaderField: "Accept")
         request.setValue(apiKey, forHTTPHeaderField: "Authorization")
@@ -185,4 +206,80 @@ func getAsyncORSData(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLL
                 print("Raw response data: \(String(data: data, encoding: .utf8) ?? "Undecodable data")")
                 throw error
     }
+}
+
+
+func userSignUp(email: String, password: String, firstName: String, lastName: String) async throws -> Void {
+    guard let url = URL(string: "http://127.0.0.1:8000/newUser") else {
+            print("Invalid ORS URL")
+            throw URLError(.badURL)
+        }
+    
+    var request = URLRequest(url:url)
+    request.httpMethod = "POST"
+    
+    let requestBody: String = """
+            "FirstName": "\(email)",
+            "LastName": "\(password)",
+            "Email": "\(firstName)",
+            "Password": "\(lastName)"
+        """
+    
+    request.httpBody = requestBody.data(using: .utf8)
+    
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    // 5. Validate the Response
+    guard let httpResponse = response as? HTTPURLResponse,
+          (200...299).contains(httpResponse.statusCode) else {
+        throw URLError(.badServerResponse)
+    }
+}
+
+
+func userLogin(email: String, password: String) async throws -> String {
+    guard let url = URL(string: "http://127.0.0.1:8000/login") else {
+            print("Invalid ORS URL")
+            throw URLError(.badURL)
+        }
+    
+    var request = URLRequest(url:url)
+    request.httpMethod = "POST"
+    
+    let requestBody: String = """
+        {
+            "Email": "\(email)",
+            "Password": "\(password)"
+        }
+        """
+    
+    request.httpBody = requestBody.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    guard let httpResponse = response as? HTTPURLResponse,
+          (200...299).contains(httpResponse.statusCode) else {
+        throw URLError(.badServerResponse)
+    }
+    
+    let decoder = JSONDecoder()
+    do {
+        let loginResponse = try decoder.decode(userLoginResponse.self, from: data)
+        print(loginResponse.Token)
+        return loginResponse.Token
+    } catch {
+        print("Raw JSON data: \(String(data: data, encoding: .utf8) ?? "Unable to convert data to string")")
+
+        print("Error decoding JSON: \(error)") // Keep your original error print
+            // ... other error handling ...
+    }
+    return ""
+}
+
+
+struct userLoginResponse: Decodable {
+    var status: Int32
+    var Token: String
+    var info: String
 }
