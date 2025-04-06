@@ -17,12 +17,11 @@ class logInCredentials(BaseModel):
 class routeInformation(BaseModel):
     Email: str
     RouteName: str
-    Distance: str
-    Incline: str
-    Longitude: str
-    Latitude: str
-    FilePath: str
+    Distance: int
+    Incline: float
+    Longitude: float
+    Latitude: float
     gpxFile: UploadFile
-    token: str
+    oken: str
 
 
