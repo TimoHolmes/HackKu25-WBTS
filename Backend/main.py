@@ -99,7 +99,6 @@ async def get_route_by_email_and_name(
 
     db_file_path = route["FilePath"] 
 
-
     if not os.path.exists(db_file_path):
         raise HTTPException(status_code=404, detail="GPX file not found")
 

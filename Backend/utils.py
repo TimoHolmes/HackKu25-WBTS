@@ -25,7 +25,49 @@ def save_route_file(user_email: str, fileContents: str, fileName):
     return file_path
 
 
-def haversine_miles(lat1, lon1, lat2, lon2):
+def create_bounding_box(latitude, longitude, distance_miles):
+    """
+    Generates the coordinates for a bounding box around a given point.
+
+    Args:
+        latitude (float): Latitude of the center point in degrees.
+        longitude (float): Longitude of the center point in degrees.
+        distance_miles (float): Distance in miles from the center point to each side of the box.
+
+    Returns:
+        tuple: A tuple containing (min_longitude, min_latitude, max_longitude, max_latitude).
+    """
+
+    earth_radius_miles = 3958.8  # Radius of the Earth in miles
+
+    # Convert latitude and longitude to radians
+    lat_rad = math.radians(latitude)
+    lon_rad = math.radians(longitude)
+
+    # Angular distance in radians
+    angular_distance = distance_miles / earth_radius_miles
+
+    # Calculate min and max latitudes
+    min_lat_rad = lat_rad - angular_distance
+    max_lat_rad = lat_rad + angular_distance
+
+    # Calculate delta longitude
+    delta_lon_rad = math.asin(math.sin(angular_distance) / math.cos(lat_rad))
+
+    # Calculate min and max longitudes
+    min_lon_rad = lon_rad - delta_lon_rad
+    max_lon_rad = lon_rad + delta_lon_rad
+
+    # Convert back to degrees
+    min_latitude = math.degrees(min_lat_rad)
+    max_latitude = math.degrees(max_lat_rad)
+    min_longitude = math.degrees(min_lon_rad)
+    max_longitude = math.degrees(max_lon_rad)
+
+    return [[min_latitude, min_longitude], [max_latitude, max_longitude]]
+
+
+def haversine_miles(coord1, coord2):
     """
     Calculates the great circle distance between two points on the Earth
     using the Haversine formula, with the result in miles.
@@ -39,6 +81,11 @@ def haversine_miles(lat1, lon1, lat2, lon2):
     Returns:
         float: The distance between the two points in miles.
     """
+    #unpack variables
+    lat1, lon1 = coord1
+    lat2, lon2 = coord2
+
+
     # Radius of the Earth in miles
     R = 3958.8
 
