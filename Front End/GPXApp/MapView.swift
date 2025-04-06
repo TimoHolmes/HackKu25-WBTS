@@ -88,7 +88,7 @@ struct MapView: View {
                         deviceLocationService.requestLocationUpdates()
 
                         // Set initial map position (e.g., Lawrence, KS, or based on user location if available)
-                         let initialCenter = currentCoordinates ?? CLLocationCoordinate2D(latitude: 38.9717, longitude: -95.2353)
+                         let initialCenter = currentCoordinates ?? CLLocationCoordinate2D(latitude: 38.9571529, longitude: -95.253022)
                         position = .region(MKCoordinateRegion(
                             center: initialCenter,
                             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05) // Adjust zoom level
